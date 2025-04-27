@@ -1,0 +1,39 @@
+body { 
+  font-family: Arial, sans-serif;
+}
+
+.container {
+  max-width: 60%;
+  margin: 2em auto;
+  text-align: center;
+  gap: 1em;
+}
+      
+input { 
+  display: block; 
+  margin-bottom: 10px; 
+  padding: 8px; 
+  width: 300px; 
+}
+      
+button { 
+  padding: 10px 20px; 
+}
+      
+#mensaje {
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: bold;
+}
+      
+.exito { 
+  color: green; 
+}
+      
+.error { 
+  color: red; 
+}
+
+.etiqueta {
+  margin-left: .3em !important;
+}
