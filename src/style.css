@@ -6,34 +6,26 @@ body {
   max-width: 60%;
   margin: 2em auto;
   text-align: center;
+  display: flex;
+  flex-direction: column;
   gap: 1em;
 }
-      
-input { 
-  display: block; 
-  margin-bottom: 10px; 
-  padding: 8px; 
-  width: 300px; 
-}
-      
-button { 
-  padding: 10px 20px; 
-}
-      
-#mensaje {
-  margin-top: 20px;
-  font-size: 18px;
-  font-weight: bold;
-}
-      
-.exito { 
-  color: green; 
-}
-      
-.error { 
-  color: red; 
+
+.buscador {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  justify-content: center;
 }
 
-.etiqueta {
-  margin-left: .3em !important;
+.card-img-top {
+  height: 10em !important;
+  width: 100% !important;
+  object-fit: contain !important; /* MUY importante */
+  object-position: center !important;
+  margin-top: .5em;
+}
+
+.card-body {
+  text-align: left;
 }

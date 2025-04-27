@@ -1,131 +1,96 @@
-    // Definimos la interfaz para la validación
-    interface ValidacionClave {
-        esValida: boolean;
-        error?: string;
-    }
-    
-    // Función para validar que tenga mayúsculas y minúsculas
-    const tieneMayusculasYMinusculas = (clave: string): ValidacionClave => {
-        const tieneMayuscula = /[A-Z]/.test(clave);
-        const tieneMinuscula = /[a-z]/.test(clave);
-        
-        if (!tieneMayuscula || !tieneMinuscula) {
-        return { esValida: false, error: "La clave debe de tener mayúsculas y minúsculas" };
-        }
-        return { esValida: true };
-    };
-    
-    // Función para validar que tenga números
-    const tieneNumeros = (clave: string): ValidacionClave => {
-        const tieneNumero = /\d/.test(clave);
-        
-        if (!tieneNumero) {
-        return { esValida: false, error: "La clave debe de tener números" };
-        }
-        return { esValida: true };
-    };
-    
-    // Función para validar que tenga caracteres especiales
-    const tieneCaracteresEspeciales = (clave: string): ValidacionClave => {
-        const tieneEspecial = /[@#_+\-!$%^&*(),.?":{}|<>]/.test(clave);
-        
-        if (!tieneEspecial) {
-        return { esValida: false, error: "La clave debe de tener caracteres especiales" };
-        }
-        return { esValida: true };
-    };
-    
-    // Función para validar longitud mínima
-    const tieneLongitudMinima = (clave: string): ValidacionClave => {
-        if (clave.length < 8) {
-        return { esValida: false, error: "La clave debe de tener una longitud mínima de 8 caracteres" };
-        }
-        return { esValida: true };
-    };
-    
-    // Función para validar que no contenga el nombre de usuario
-    const tieneNombreUsuario = (nombreUsuario: string, clave: string): ValidacionClave => {
-        if (clave.toLowerCase().includes(nombreUsuario.toLowerCase())) {
-        return { esValida: false, error: "La clave no debe tener el nombre del usuario" };
-        }
-        return { esValida: true };
-    };
-    
-    // Función para validar que no contenga palabras comunes
-    const tienePalabrasComunes = (clave: string, commonPasswords: string[]): ValidacionClave => {
-        const claveLower = clave.toLowerCase();
-        
-        for (const palabra of commonPasswords) {
-        if (claveLower.includes(palabra.toLowerCase())) {
-            return { esValida: false, error: "La clave no debe de contener palabras comunes" };
-        }
-        }
-        return { esValida: true };
-    };
-    
-    // Función principal que combina todas las validaciones
-    const validarClave = (
-        nombreUsuario: string,
-        clave: string,
-        commonPasswords: string[]
-    ): ValidacionClave => {
-        let validacion: ValidacionClave;
-    
-        validacion = tieneMayusculasYMinusculas(clave);
-        if (!validacion.esValida) return validacion;
-    
-        validacion = tieneNumeros(clave);
-        if (!validacion.esValida) return validacion;
-    
-        validacion = tieneCaracteresEspeciales(clave);
-        if (!validacion.esValida) return validacion;
-    
-        validacion = tieneLongitudMinima(clave);
-        if (!validacion.esValida) return validacion;
-    
-        validacion = tieneNombreUsuario(nombreUsuario, clave);
-        if (!validacion.esValida) return validacion;
-    
-        validacion = tienePalabrasComunes(clave, commonPasswords);
-        if (!validacion.esValida) return validacion;
-    
-        return { esValida: true };
-    };
+import Axios from "axios";
 
-    // Lista de contraseñas comunes
-    const commonPasswords: string[] = [
-        "password", "123456", "qwerty", "admin", "letmein", "welcome", "monkey",
-        "sunshine", "password1", "123456789", "football", "iloveyou", "1234567",
-        "123123", "12345678", "abc123", "qwerty123", "1q2w3e4r", "baseball",
-        "password123", "superman", "987654321", "mypass", "trustno1", "hello123",
-        "dragon", "1234", "555555", "loveme", "hello", "hockey", "letmein123",
-        "welcome123", "mustang", "shadow", "12345", "passw0rd", "abcdef", "123abc",
-        "football123", "master", "jordan23", "access", "flower", "qwertyuiop",
-        "admin123", "iloveyou123", "welcome1", "monkey123", "sunshine1", "password12",
-        "1234567890",
-    ];
-    
-    // Ejemplos de uso
-    const pruebas = [
-        { nombreUsuario: "juan", clave: "Password123@", descripcion: "Clave válida" },
-        { nombreUsuario: "maria", clave: "password", descripcion: "Palabra común" },
-        { nombreUsuario: "carlos", clave: "Carlos123@", descripcion: "Contiene nombre usuario" },
-        { nombreUsuario: "ana", clave: "abc", descripcion: "Clave demasiado corta" },
-        { nombreUsuario: "luis", clave: "abcdefghi", descripcion: "Solo minúsculas" },
-        { nombreUsuario: "lucia", clave: "PASSWORD123", descripcion: "Solo mayúsculas y números" },
-        { nombreUsuario: "pedro", clave: "Password@", descripcion: "No tiene números" },
-        { nombreUsuario: "antonio", clave: "peRiquito!8356", descripcion: "La clave es válida" },
-    ];
-    
-    pruebas.forEach(({ nombreUsuario, clave }, index) => {
-        const resultado = validarClave(nombreUsuario, clave, commonPasswords);
-        
-        const descripcion = resultado.esValida
-            ? "Clave válida"
-            : resultado.error || "Clave inválida";
-        
-        console.log(`\nPrueba ${index + 1}:`);
-        console.log(`Clave: ${clave}`);
-        console.log(`¿Es válida?: ${resultado.esValida}`);
-        console.log(`Descripción: ${descripcion}`);
-    });    
+interface characters {
+    id: string;
+    nombre: string;
+    apodo: string;
+    especialidad: string;
+    habilidades: string[];
+    amigo: string;
+    imagen: string; // ahora tratamos imagen como string (webp en base64 o ruta)
+}
+
+// Función para traer personajes
+const Personajes = (): Promise<characters[]> => {
+    return new Promise((resolve) => {
+        Axios.get('http://localhost:3000/personajes').then((response) => {
+            resolve(response.data);
+        });
+    });
+};
+
+// Elementos del DOM
+const searchInput = document.getElementById('search') as HTMLInputElement;
+const cleanButton = document.querySelector('button.btn-success') as HTMLButtonElement;
+const resultsContainer = document.getElementById('results') as HTMLDivElement;
+
+let allCharacters: characters[] = []; // guardamos los personajes globalmente
+
+function renderCharacters(characters: characters[]): void {
+    resultsContainer.innerHTML = '';
+
+    if (characters.length === 0) {
+        resultsContainer.innerHTML = '<p class="alert alert-danger">No se encontraron personajes.</p>';
+        return;
+    }
+
+    const rowDiv = document.createElement('div');
+    rowDiv.className = 'row'; // Bootstrap row para las columnas
+
+    characters.forEach(character => {
+        const colDiv = document.createElement('div');
+        colDiv.className = 'col-12 col-md-4 mb-4'; // Responsive: 12 en móvil, 4 en escritorio
+
+        colDiv.innerHTML = `
+            <div class="card h-100">
+                <img src="http://localhost:3000/${character.imagen}" class="card-img-top" alt="${character.nombre}">
+                <div class="card-body">
+                    <p class="card-title"><b>Nombre:</b> ${character.nombre}</p>
+                    <p class="card-text"><b>Especialidad:</b> ${character.especialidad}</p>
+                    <p class="card-text"><b>Habilidades:</b> ${character.habilidades.join(', ')}</p>
+                </div>
+            </div>
+        `;
+
+        rowDiv.appendChild(colDiv);
+    });
+
+    resultsContainer.appendChild(rowDiv);
+}
+
+// Función para filtrar personajes
+function filterCharacters() {
+    const query = searchInput.value.trim().toLowerCase();
+
+    if (query === '') {
+        renderCharacters(allCharacters);
+        return;
+    }
+
+    const filtered = allCharacters.filter(personaje =>
+        personaje.nombre.toLowerCase().includes(query) ||
+        personaje.apodo.toLowerCase().includes(query) ||
+        personaje.especialidad.toLowerCase().includes(query) ||
+        personaje.habilidades.some(hab => hab.toLowerCase().includes(query))
+    );
+
+    renderCharacters(filtered);
+}
+
+// Función para limpiar la búsqueda
+function cleanSearch() {
+    searchInput.value = '';
+    renderCharacters(allCharacters);
+}
+
+// Evento: Buscar mientras escribe
+searchInput.addEventListener('input', filterCharacters);
+
+// Evento: Limpiar al hacer click en el botón
+cleanButton.addEventListener('click', cleanSearch);
+
+// Al cargar la página, mostrar todos los personajes
+window.addEventListener('DOMContentLoaded', async () => {
+    allCharacters = await Personajes();
+    renderCharacters(allCharacters);
+});
