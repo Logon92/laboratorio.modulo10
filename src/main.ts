@@ -7,7 +7,7 @@ interface characters {
     especialidad: string;
     habilidades: string[];
     amigo: string;
-    imagen: string; // ahora tratamos imagen como string (webp en base64 o ruta)
+    imagen: string;
 }
 
 // Función para traer personajes
@@ -35,11 +35,11 @@ function renderCharacters(characters: characters[]): void {
     }
 
     const rowDiv = document.createElement('div');
-    rowDiv.className = 'row'; // Bootstrap row para las columnas
+    rowDiv.className = 'row';
 
     characters.forEach(character => {
         const colDiv = document.createElement('div');
-        colDiv.className = 'col-12 col-md-4 mb-4'; // Responsive: 12 en móvil, 4 en escritorio
+        colDiv.className = 'col-12 col-md-4 mb-4';
 
         colDiv.innerHTML = `
             <div class="card h-100">
